@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BetType {
+  GRUPO
+  DEZENA
+  CENTENA
+  MILHAR
+  DUQUE_GRUPO
+  TERNO_GRUPO
+  MILHAR_INVERTIDA
+}
+
+enum BetScope {
+  HEAD
+  FROM_1_TO_5
+}
+
+model Draw {
+  id         String      @id @default(cuid())
+  firstPrize String      @db.VarChar(4)
+  secondPrize String     @db.VarChar(4)
+  thirdPrize String      @db.VarChar(4)
+  fourthPrize String     @db.VarChar(4)
+  fifthPrize String      @db.VarChar(4)
+  seed       String?     @db.VarChar(128)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  results    BetResult[]
+
+  @@index([createdAt])
+}
+
+model Bet {
+  id            String      @id @default(cuid())
+  type          BetType
+  scope         BetScope
+  value         Json
+  pointsStaked  Int
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  results       BetResult[]
+
+  @@index([type, scope])
+  @@index([createdAt])
+}
+
+model BetResult {
+  id          String    @id @default(cuid())
+  betId       String
+  drawId      String
+  isWin       Boolean
+  prizePoints Int       @default(0)
+  matchDetail Json?
+  createdAt   DateTime  @default(now())
+
+  bet         Bet       @relation(fields: [betId], references: [id], onDelete: Cascade)
+  draw        Draw      @relation(fields: [drawId], references: [id], onDelete: Cascade)
+
+  @@unique([betId, drawId])
+  @@index([isWin])
+  @@index([createdAt])
+}

@@ -1,0 +1,107 @@
+# ------------------------------
+# Root / OS / Editor
+# ------------------------------
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*.tmp
+*.log
+*.pid
+*.seed
+*.orig
+
+.vscode/
+.idea/
+
+# ------------------------------
+# Environment files
+# ------------------------------
+.env
+.env.*
+!.env.example
+
+# ------------------------------
+# Node / Package managers
+# ------------------------------
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+
+# npm / pnpm / yarn debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ------------------------------
+# Monorepo build artifacts
+# ------------------------------
+dist/
+build/
+coverage/
+.cache/
+.tmp/
+temp/
+out/
+.eslintcache
+*.tsbuildinfo
+
+# ------------------------------
+# Frontend (React/Vite)
+# ------------------------------
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/coverage/
+frontend/.vite/
+frontend/.cache/
+frontend/.turbo/
+
+# Legacy compiled/duplicated JS files in frontend src (TS source is canonical)
+frontend/src/**/*.js
+
+# ------------------------------
+# Backend (Node/TS)
+# ------------------------------
+backend/node_modules/
+backend/dist/
+backend/build/
+backend/coverage/
+backend/.cache/
+backend/.turbo/
+
+# Prisma generated artifacts (if local)
+backend/prisma/dev.db
+backend/prisma/dev.db-journal
+backend/prisma/*.db
+backend/prisma/*.db-journal
+
+# ------------------------------
+# Test artifacts
+# ------------------------------
+junit.xml
+playwright-report/
+test-results/
+
+# ------------------------------
+# Railway / Deploy
+# ------------------------------
+.railway/
+.vercel/
+.netlify/
+
+# ------------------------------
+# Keep important lockfiles tracked
+# ------------------------------
+!package-lock.json
+!frontend/package-lock.json
+!backend/package-lock.json
+!pnpm-lock.yaml
+!yarn.lock
