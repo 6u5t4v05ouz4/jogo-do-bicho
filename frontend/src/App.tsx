@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useMemo, useState, useEffect } from "react";
 import api, {
   ApiError,
   BetInput,
@@ -63,7 +63,9 @@ function App() {
   const [healthMessage, setHealthMessage] = useState<string>("");
 
   // draw
-  const [drawLoading, setDrawLoading] = useState(false);
+  const drawLoading,
+    setDrawLoading = useState(false);
+  const [autoDrawCooldown, setAutoDrawCooldown] = useState<number>(3);
   const [drawUnique, setDrawUnique] = useState(false);
   const [drawData, setDrawData] = useState<DrawUi | null>(null);
   const [drawParsed, setDrawParsed] = useState<DrawParsedUi | null>(null);
@@ -99,13 +101,30 @@ function App() {
       case "aposta":
         return "Nova Aposta";
       case "historico":
-        return "Histórico de Sorteios";
+        return `Histórico de Sorteios - Cooldown: ${autoDrawCooldown} min`;
       case "regras":
         return "Regras Técnicas";
       default:
         return "JOGOBICHO";
     }
-  }, [currentView]);
+  }, [currentView, autoDrawCooldown]);
+
+  // Efeito para countdown automático de sorteios
+  useEffect(() => {
+    let intervalId: number | null = null;
+
+    const timer = setInterval(() => {
+      if (autoDrawCooldown <= 1) {
+        clearInterval(intervalId);
+      } else {
+        setAutoDrawCooldown((prev) => prev - 1);
+      }
+    }, 60000);
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [autoDrawCooldown]);
 
   async function handleHealthCheck() {
     setHealthStatus("loading");
@@ -134,6 +153,9 @@ function App() {
       setDrawError(formatError(err));
     } finally {
       setDrawLoading(false);
+
+      // Resetar cooldown para 3 minutos após cada sorteio
+      setAutoDrawCooldown(3);
     }
   }
 
@@ -375,8 +397,14 @@ function App() {
                 </div>
               ) : (
                 <>
+                  {autoDrawCooldown > 0 && (
+                    <p style={styles.miniText}>
+                      ⏱️ Cooldown: {autoDrawCooldown}min antes do próximo
+                      sorteio
+                    </p>
+                  )}
+
                   <p>
-                    Sorteio atual em:{" "}
                     <strong>
                       {new Date(drawData.createdAt).toLocaleString()}
                     </strong>
